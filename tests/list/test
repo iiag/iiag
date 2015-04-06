@@ -1,5 +1,0 @@
-#!/bin/bash
-DEST=$(mktemp)
-gcc -g -Wall -Werror main.c ../../src/util/list.c -I../../src -o $DEST
-$DEST
-
