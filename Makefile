@@ -13,7 +13,7 @@ CCFL := -c -g -Wall -Werror
 LDFL := -Wall -Werror -lm
 
 # List of source files
-SRCS :=
+SRCS := $(shell find src -name \*.c -type f -exec basename {} \;)
 
 # Construct file lists
 OBJS := $(addprefix build/obj/,$(patsubst %.c,%.o,$(SRCS)))
