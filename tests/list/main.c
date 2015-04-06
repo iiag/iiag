@@ -42,5 +42,7 @@ int main()
 
 	expect(sum == 1 + 2 + 4 + 8 + 16);
 
+	list_destroy(l);
+
 	return 0;
 }
