@@ -9,19 +9,25 @@ CC      = gcc
 DESTDIR = /opt/iiag
 
 # Compile and link flags
-CCFL := -c -g -Wall -Werror
+CCFL := -g -Wall -Werror
 LDFL := -Wall -Werror -lm
 
 # List of source files
-SRCS := $(shell find src -name \*.c -type f -exec basename {} \;)
-
-# List of tests
-TESTS := $(shell find tests -name test -type f)
+SRCS := $(subst src/,,$(shell find src -name \*.c -type f))
 
 # Construct file lists
 OBJS := $(addprefix build/obj/,$(patsubst %.c,%.o,$(SRCS)))
 DEPS := $(addprefix build/dep/,$(patsubst %.c,%.d,$(SRCS)))
 SRCS := $(addprefix src/,$(SRCS))
+
+# List of tests
+TESTS := $(shell find tests -name test.c -type f)
+
+# Object files to compile with tests, don't want conflicting mains
+TEST_OBJS = $(filter-out build/obj/main.o,$(OBJS))
+
+# The program that runs the tests, can be and empty string
+TESTER = valgrind -q
 
 # All the make rules
 .PHONY: all clean install test FORCE_RULE
@@ -35,14 +41,18 @@ build/obj/%.o: src/%.c
 	@ mkdir -p $(@D)
 	@ mkdir -p $(subst obj,dep,$(@D))
 	@ $(CC) -MM -MP -MT $@ -MF $(patsubst %.o,%.d,$(subst obj,dep,$@)) $<
-	$(CC) $(CCFL) $< -o $@
+	$(CC) -c $(CCFL) $< -o $@
 
-test: $(TESTS)
+test: all $(TESTS)
 	@ echo All tests passed!
 
-%/test: FORCE_RULE
-	@ echo Testing $(subst tests/,,$(@D))...
-	@ cd $(@D) && ./test
+%/test.c: FORCE_RULE
+	@ mkdir -p build/$(shell dirname $(@D))
+	@ echo testing $(subst tests/,,$(@D)):
+	@ echo " > building..."
+	@ $(CC) $(CCFL) $(LDFL) -g -Isrc -I$(@D) $(@D)/*.c $(TEST_OBJS) -o build/$(@D)
+	@ echo " > running..."
+	@ $(TESTER) build/$(@D)
 
 clean:
 	rm -rf build
