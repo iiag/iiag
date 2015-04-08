@@ -28,7 +28,7 @@ bool start_server(void)
 	addr.sin_port = 1337;
 	addr.sin_addr.s_addr = INADDR_ANY;
 
-	if (bind(socket, (struct sockaddr *) &addr, sizeof(sockaddr_in)) == -1) {
+	if (bind(socket, (struct sockaddr *) &addr, sizeof(addr)) == -1) {
 		perror("Could not bind socket");
 		return NULL;
 	}
