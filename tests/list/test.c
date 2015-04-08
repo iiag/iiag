@@ -8,11 +8,9 @@
 		return EXIT_FAILURE; \
 	}
 
-int sum = 0;
-
-void sumify(int * x)
+void sumify(int * x, int * sum)
 {
-	sum += *x;
+	*sum += *x;
 }
 
 void push_all(list_t * ls, int * ints, int cnt)
@@ -26,6 +24,7 @@ void push_all(list_t * ls, int * ints, int cnt)
 
 int main()
 {
+	int sum = 0;
 	list_t * l = list_new();
 
 	int stuff[] = {1, 2, 4, 100, 101};
@@ -38,7 +37,7 @@ int main()
 
 	push_all(l, stuff2, 2);
 
-	list_foreach(l, (list_foreach_func)sumify);
+	list_foreach(l, &sum, (list_foreach_func)sumify);
 
 	expect(sum == 1 + 2 + 4 + 8 + 16);
 
