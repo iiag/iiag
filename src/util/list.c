@@ -48,12 +48,12 @@ void * list_pop(list_t * ls)
 	return value;
 }
 
-void list_foreach(list_t * ls, list_foreach_func func)
+void list_foreach(list_t * ls, void * arg2, list_foreach_func func)
 {
 	list_elm_t * elm = *ls;
 
 	while (elm) {
-		func(elm->value);
+		func(elm->value, arg2);
 		elm = elm->next;
 	}
 }

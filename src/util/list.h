@@ -4,7 +4,7 @@
 typedef struct list_elm list_elm_t;
 typedef list_elm_t * list_t;
 
-typedef void (* list_foreach_func)(void *);
+typedef void (* list_foreach_func)(void *, void *);
 
 // Instantiates a new, empty list
 list_t * list_new(void);
@@ -20,6 +20,7 @@ void list_push(list_t *, void *);
 void * list_pop(list_t *);
 
 // Applies a function to each element in the list
-void list_foreach(list_t *, list_foreach_func);
+// The first argument to the given function will be the element's value, the 2nd `arg2`
+void list_foreach(list_t *, void * arg2, list_foreach_func);
 
 #endif
