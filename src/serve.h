@@ -4,6 +4,13 @@
 #include <stdbool.h>
 
 typedef struct server server_t;
+typedef struct connection connection_t;
+
+struct connection {
+	int major_ver;
+	int minor_ver;
+	int socket;
+};
 
 // Start the server, returns a server_t if successful, NULL if not
 server_t * start_server(void);
@@ -15,7 +22,7 @@ bool stop_server(server_t *);
 void tick_server(server_t *);
 
 // Functions for registering connect/disconnect handlers
-void on_connect(server_t *, void (* handler)(int identifier));
-void on_disconnect(server_t *, void (* handler)(int identifier));
+void on_connect(server_t *, void (* handler)(connection_t *));
+void on_disconnect(server_t *, void (* handler)(connection_t *));
 
 #endif

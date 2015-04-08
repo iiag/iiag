@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include "serve.h"
@@ -56,10 +57,62 @@ bool stop_server(server_t * server)
 	return true;
 }
 
-// Called by tick_server upon each new connection found
-static void new_connection(const struct sockaddr_in addr, soclen_t len)
+static void call_handler(void (* handler)(int), const connection_t * conn)
 {
-	// TODO
+	handler(conn);
+}
+
+// Called by tick_server upon each new connection found
+static void new_connection(
+		server_t * server,
+		int socket,
+		const struct sockaddr_in * addr,
+		soclen_t len)
+{
+	// Our handshake response does not change
+	static iiag_handshake_t my_handshake = {
+		IIAG_MARKER,
+		IIAG_PROTO_MAJOR,
+		IIAG_PROTO_MINOR
+	};
+
+	// Recieve the handshake from the client
+	iiag_handler_t recv_handshake;
+	int ret = recv(socket, &recv_handshake, sizeof(recv_handshake), 0);
+
+	if (ret != sizeof(recv_handshake)) {
+		// Bad first packet (wrong size), close the connection
+		close(socket);
+		return;
+	}
+
+	if (memcmp(IIAG_MARKER, recv_handshake->marker, IIAG_MARKER_LENGTH)) {
+		// Not iiag protocol, close connection
+		close(socket);
+		return;
+	}
+
+	if (recv_handshake->major_ver != IIAG_PROTO_MAJOR) {
+		// Difference in major versions, close connection
+		// TODO send bad version packet?
+		close(socket);
+		return;
+	}
+
+	// Send our response
+	send(socket, &my_handshake, sizeof(my_handshake), 0);
+
+	// Create the connection object
+	connection_t * conn = malloc(sizeof(connection_t));
+	conn->sock = socket;
+	conn->major_ver = recv_handshake->major_ver;
+	conn->minor_ver = recv_handshake->minor_ver;
+
+	// Trigger all on connect handlers
+	list_foreach(server->connect_handlers, conn, call_handler);
+
+	// Store the connection in the server
+	list_push(server->connections, conn);
 }
 
 void tick_server(server_t * server)
@@ -76,7 +129,7 @@ void tick_server(server_t * server)
 		accepted = (ret == EAGAIN || ret == EWOULDBLOCK);
 
 		if (accepted) {
-			new_connection(&addr, socklen);
+			new_connection(server, ret, &addr, socklen);
 		}
 	} while (accepted);
 }
