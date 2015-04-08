@@ -1,11 +1,13 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include "serve.h"
+#include "util/list.h"
 
 struct server {
-	int socket; // file descriptor
-
-	// TODO need fields for connect/disconnect handlers
+	int socket;
+	list_t * connections;
+	list_t * connect_handler;
+	list_t * disconnect_handler;
 };
 
 bool start_server(void)
@@ -81,10 +83,10 @@ void tick_server(server_t * server)
 
 void on_connect(server_t * server, bool (* handler)(int identifier))
 {
-	// TODO
+	list_push(server->connect_handlers, handler);
 }
 
 void on_disconnect(server_t * server, void (* handler)(int identifier))
 {
-	// TODO
+	list_push(server->disconnect_handlers, handler);
 }
