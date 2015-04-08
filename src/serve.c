@@ -100,7 +100,11 @@ static void new_connection(
 	}
 
 	// Send our response
-	send(socket, &my_handshake, sizeof(my_handshake), 0);
+	if (send(socket, &my_handshake, sizeof(my_handshake), 0) != sizeof(my_handshake)) {
+		// Could not send response handshake, ok, close connection
+		close(socket);
+		return;
+	}
 
 	// Create the connection object
 	connection_t * conn = malloc(sizeof(connection_t));
