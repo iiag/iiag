@@ -67,7 +67,7 @@ bool stop_server(server_t * server)
 	return true;
 }
 
-static void call_handler(void (* handler)(int), const connection_t * conn)
+static void call_handler(connection_handler handler, const connection_t * conn)
 {
 	handler(conn);
 }
@@ -148,12 +148,12 @@ void tick_server(server_t * server)
 	} while (accepted);
 }
 
-void on_connect(server_t * server, bool (* handler)(int identifier))
+void on_connect(server_t * server, connection_handler handler)
 {
 	list_push(server->connect_handlers, handler);
 }
 
-void on_disconnect(server_t * server, void (* handler)(int identifier))
+void on_disconnect(server_t * server, connection_handler handler)
 {
 	list_push(server->disconnect_handlers, handler);
 }

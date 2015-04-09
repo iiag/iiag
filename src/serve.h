@@ -6,6 +6,8 @@
 typedef struct server server_t;
 typedef struct connection connection_t;
 
+typedef void (* connection_handler)(const connection_t *);
+
 struct connection {
 	int major_ver;
 	int minor_ver;
@@ -22,7 +24,7 @@ bool stop_server(server_t *);
 void tick_server(server_t *);
 
 // Functions for registering connect/disconnect handlers
-void on_connect(server_t *, void (* handler)(connection_t *));
-void on_disconnect(server_t *, void (* handler)(connection_t *));
+void on_connect(server_t *, connection_handler);
+void on_disconnect(server_t *, connection_handler);
 
 #endif
