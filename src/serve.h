@@ -9,7 +9,7 @@ typedef struct connection connection_t;
 struct connection {
 	int major_ver;
 	int minor_ver;
-	int socket;
+	int sock;
 };
 
 // Start the server, returns a server_t if successful, NULL if not

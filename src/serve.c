@@ -5,7 +5,7 @@
 #include "util/list.h"
 
 struct server {
-	int socket;
+	int sock;
 	list_t * connections;
 	list_t * connect_handler;
 	list_t * disconnect_handler;
@@ -13,13 +13,13 @@ struct server {
 
 bool start_server(void)
 {
-	int socket;
+	int sock;
 	server_t * server;
 	struct sockaddr_in addr;
 
 	// Open a socket
-	socket = socket(AF_INET, SOCK_STREAM, 0);
-	if (socket == -1) {
+	sock = socket(AF_INET, SOCK_STREAM, 0);
+	if (sock == -1) {
 		perror("Could not open socket");
 		return NULL;
 	}
@@ -29,19 +29,19 @@ bool start_server(void)
 	addr.sin_port = 1337;
 	addr.sin_addr.s_addr = INADDR_ANY;
 
-	if (bind(socket, (struct sockaddr *) &addr, sizeof(addr)) == -1) {
+	if (bind(sock, (struct sockaddr *) &addr, sizeof(addr)) == -1) {
 		perror("Could not bind socket");
 		return NULL;
 	}
 
 	// Listen on the socket!
-	if (listen(socket, 10) == -1) {
+	if (listen(sock, 10) == -1) {
 		perror("Could not listen on socket");
 		return NULL;
 	}
 
 	server = malloc(sizeof(server_t));
-	server->socket = socket;
+	server->sock = sock;
 
 	return server;
 }
@@ -49,7 +49,7 @@ bool start_server(void)
 bool stop_server(server_t * server)
 {
 	// Close the connection
-	if (close(server->socket) == -1) {
+	if (close(server->sock) == -1) {
 		perror("Could not close socket");
 		return false;
 	}
@@ -65,7 +65,7 @@ static void call_handler(void (* handler)(int), const connection_t * conn)
 // Called by tick_server upon each new connection found
 static void new_connection(
 		server_t * server,
-		int socket,
+		int sock,
 		const struct sockaddr_in * addr,
 		soclen_t len)
 {
@@ -78,37 +78,37 @@ static void new_connection(
 
 	// Recieve the handshake from the client
 	iiag_handler_t recv_handshake;
-	int ret = recv(socket, &recv_handshake, sizeof(recv_handshake), 0);
+	int ret = recv(sock, &recv_handshake, sizeof(recv_handshake), 0);
 
 	if (ret != sizeof(recv_handshake)) {
 		// Bad first packet (wrong size), close the connection
-		close(socket);
+		close(sock);
 		return;
 	}
 
 	if (memcmp(IIAG_MARKER, recv_handshake->marker, IIAG_MARKER_LENGTH)) {
 		// Not iiag protocol, close connection
-		close(socket);
+		close(sock);
 		return;
 	}
 
 	if (recv_handshake->major_ver != IIAG_PROTO_MAJOR) {
 		// Difference in major versions, close connection
 		// TODO send bad version packet?
-		close(socket);
+		close(sock);
 		return;
 	}
 
 	// Send our response
-	if (send(socket, &my_handshake, sizeof(my_handshake), 0) != sizeof(my_handshake)) {
+	if (send(sock, &my_handshake, sizeof(my_handshake), 0) != sizeof(my_handshake)) {
 		// Could not send response handshake, ok, close connection
-		close(socket);
+		close(sock);
 		return;
 	}
 
 	// Create the connection object
 	connection_t * conn = malloc(sizeof(connection_t));
-	conn->sock = socket;
+	conn->sock = sock;
 	conn->major_ver = recv_handshake->major_ver;
 	conn->minor_ver = recv_handshake->minor_ver;
 
@@ -128,7 +128,7 @@ void tick_server(server_t * server)
 	// Accept all pending connections
 	do {
 		socklen = sizeof(struct sockaddr_in);
-		ret = accept(server->socket, (struct sockaddr *) &addr, &socklen, SOCK_NONBLOCK);
+		ret = accept(server->sock, (struct sockaddr *) &addr, &socklen, SOCK_NONBLOCK);
 
 		accepted = (ret == EAGAIN || ret == EWOULDBLOCK);
 
