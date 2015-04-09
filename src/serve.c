@@ -17,18 +17,18 @@
 struct server {
 	int sock;
 	list_t * connections;
-	list_t * connect_handler;
-	list_t * disconnect_handler;
+	list_t * connect_handlers;
+	list_t * disconnect_handlers;
 };
 
-bool start_server(void)
+server_t * start_server(void)
 {
 	int sock;
 	server_t * server;
 	struct sockaddr_in addr;
 
 	// Open a socket
-	sock = socket(AF_INET, SOCK_STREAM, 0);
+	sock = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
 	if (sock == -1) {
 		perror("Could not open socket");
 		return NULL;
@@ -77,7 +77,7 @@ static void new_connection(
 		server_t * server,
 		int sock,
 		const struct sockaddr_in * addr,
-		soclen_t len)
+		socklen_t len)
 {
 	// Our handshake response does not change
 	static iiag_handshake_t my_handshake = {
@@ -87,7 +87,7 @@ static void new_connection(
 	};
 
 	// Recieve the handshake from the client
-	iiag_handler_t recv_handshake;
+	iiag_handshake_t recv_handshake;
 	int ret = recv(sock, &recv_handshake, sizeof(recv_handshake), 0);
 
 	if (ret != sizeof(recv_handshake)) {
@@ -96,13 +96,13 @@ static void new_connection(
 		return;
 	}
 
-	if (memcmp(IIAG_MARKER, recv_handshake->marker, IIAG_MARKER_LENGTH)) {
+	if (memcmp(IIAG_MARKER, recv_handshake.marker, IIAG_MARKER_LENGTH)) {
 		// Not iiag protocol, close connection
 		close(sock);
 		return;
 	}
 
-	if (recv_handshake->major_ver != IIAG_PROTO_MAJOR) {
+	if (recv_handshake.major_ver != IIAG_PROTO_MAJOR) {
 		// Difference in major versions, close connection
 		// TODO send bad version packet?
 		close(sock);
@@ -119,11 +119,11 @@ static void new_connection(
 	// Create the connection object
 	connection_t * conn = malloc(sizeof(connection_t));
 	conn->sock = sock;
-	conn->major_ver = recv_handshake->major_ver;
-	conn->minor_ver = recv_handshake->minor_ver;
+	conn->major_ver = recv_handshake.major_ver;
+	conn->minor_ver = recv_handshake.minor_ver;
 
 	// Trigger all on connect handlers
-	list_foreach(server->connect_handlers, conn, call_handler);
+	list_foreach(server->connect_handlers, conn, (list_foreach_func)call_handler);
 
 	// Store the connection in the server
 	list_push(server->connections, conn);
@@ -138,7 +138,7 @@ void tick_server(server_t * server)
 	// Accept all pending connections
 	do {
 		socklen = sizeof(struct sockaddr_in);
-		ret = accept(server->sock, (struct sockaddr *) &addr, &socklen, SOCK_NONBLOCK);
+		ret = accept(server->sock, (struct sockaddr *) &addr, &socklen);
 
 		accepted = (ret == EAGAIN || ret == EWOULDBLOCK);
 
