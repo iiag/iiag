@@ -20,52 +20,58 @@ int destroy_tree(tree_t *tree){
     destroy_tree(tree->left);
     destroy_tree(tree->right);
     free(tree->data);
-    free(tree->attribute);
     free(tree);
   }
   return 0;
 }
 
 // prints inorder transversal of tree
-void print_inorder(tree_t *tree, print func){
+void print_inorder(tree_t *tree,int spaces,print funcprint){
   if(tree==NULL) return;
-  print_inorder(tree->left,func);
-  func(tree->data);
-  print_inorder(tree->right,func);
+  print_inorder(tree->left,spaces+4,funcprint);
+  funcprint(tree->data,spaces);
+  print_inorder(tree->right,spaces+4,funcprint);
 }
 
 // prints preorder transversal of tree
-void print_preorder(tree_t *tree, print func){
+void print_preorder(tree_t *tree,int spaces,print funcprint){
   if(tree==NULL) return;
-  func(tree->data);
-  print_preorder(tree->left,func);
-  print_preorder(tree->right,func);
+  funcprint(tree->data,spaces);
+  print_preorder(tree->left,spaces+4,funcprint);
+  print_preorder(tree->right,spaces+4,funcprint);
 }
 
 // prints postorder transversal of tree
-void print_postorder(tree_t *tree, print func){
+void print_postorder(tree_t *tree,int spaces,print funcprint){
   if(tree==NULL) return;
-  print_inorder(tree->left,func);
-  print_inorder(tree->right,func);
-  func(tree->data);
+  print_inorder(tree->left,spaces+4,funcprint);
+  print_inorder(tree->right,spaces+4,funcprint);
+  funcprint(tree->data,spaces);
 }
 
 // Applies a function to each element in the tree
-void map_func(tree_t *tree, func funcmap){
-  tree_t *temp=tree;
+void map_func(tree_t *tree,void *arg, func funcmap){
   if(tree==NULL) return;
-  map_func(temp->left,funcmap);
-  map_func(temp->right,funcmap);
-  funcmap(tree->data);
+  map_func(tree->left,arg,funcmap);
+  map_func(tree->right,arg,funcmap);
+  funcmap(tree->data,arg);
 }
 
 // helper to print integers
-void print_int(void *data){
-  printf("%d ",*(int*)data); 
+void print_int(void *data,int spaces){
+  int i;
+  for(i=0;i<spaces;i++){
+    fprintf(stderr, " ");
+  }
+  fprintf(stderr,"%d \n",*(int*)data); 
 }
 
 // helper to print decimals
-void print_double(void *data){
-  printf("%f ",*(double*)data); 
+void print_double(void *data,int spaces){
+  int i;
+  for(i=0;i<spaces;i++){
+    fprintf(stderr, " ");
+  }
+  fprintf(stderr,"%f \n",*(double*)data); 
 }
 

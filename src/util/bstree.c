@@ -3,39 +3,37 @@
 #include <string.h>
 #include "bstree.h"
 
-tree_t *insert(tree_t *tree,void *data,int sizeOfType,compare func){
+tree_t *insert(tree_t *tree,void *data,int sizeOfType,compare funccompare){
   tree_t *temp = NULL;
   if(tree==NULL){
     temp = (tree_t *)malloc(sizeof(tree_t));
     temp->left = temp->right = NULL;
     temp->data = malloc(sizeOfType);
     memcpy(temp->data,data,sizeOfType);
-    temp->data = data;
+    //temp->data = data;
     return temp;
   }
-  if(func(data,tree->data)<0){
-    insert(tree->left,data,sizeOfType,func);
-  }else if(func(data,tree->data)>0){
-    insert(tree->right,data,sizeOfType,func);
-  }else{
-  	return NULL;
+  if(funccompare(data,tree->data)<0){
+    tree->left = insert(tree->left,data,sizeOfType,funccompare);
+  }else if(funccompare(data,tree->data)>0){
+    tree->right = insert(tree->right,data,sizeOfType,funccompare);
   }
   return tree;
 }
 
-tree_t *delete(tree_t *tree, void *data,compare func){
+tree_t *delete(tree_t *tree, void *data,compare funccompare){
   tree_t *temp;
   if(tree==NULL){
     return NULL;
-  }else if(func(data,tree->data)<0){
-    tree->left = delete(tree->left, data, func);
-  }else if(func(data,tree->data)>0){
-    tree->right = delete(tree->right, data, func);
+  }else if(funccompare(data,tree->data)<0){
+    tree->left = delete(tree->left, data, funccompare);
+  }else if(funccompare(data,tree->data)>0){
+    tree->right = delete(tree->right, data, funccompare);
   }else{
    	if(tree->right!=NULL && tree->left!=NULL){
       temp = findMin(tree->right);
       tree -> data = temp->data; 
-      tree -> right = delete(tree->right,temp->data, func);
+      tree -> right = delete(tree->right,temp->data, funccompare);
   	}else{
       temp = tree;
       if(tree->left == NULL){
@@ -50,52 +48,51 @@ tree_t *delete(tree_t *tree, void *data,compare func){
 }
 
 
-tree_t *search(tree_t *tree, void *data,compare func){
+tree_t *search(tree_t *tree, void *data,compare funccompare){
   if(tree==NULL) return NULL;
 
-  if(func(data,tree->data)<0){
-    search(tree->left,data,func);
-  }else if(func(data,tree->data)>0){
-    search(tree->right,data,func);
-  }else if(func(data,tree->data)==0){
+  if(funccompare(data,tree->data)<0){
+    search(tree->left,data,funccompare);
+  }else if(funccompare(data,tree->data)>0){
+    search(tree->right,data,funccompare);
+  }else{
     return tree;
   }
-  return NULL;
+  return tree;
 }
 
 //find min element
 tree_t *findMin(tree_t *tree){
-	tree_t *temp=tree;
-  if(temp==NULL){
+  if(tree==NULL){
     return NULL;
   }
-  if(temp->left){
-  	findMin(temp->left);
+  if(tree->left!=NULL){
+  	return findMin(tree->left);
   }else{
-  	return temp;
+  	return tree;
   }
   return NULL;
 }
 
 //find max element
 tree_t *findMax(tree_t *tree){
-	tree_t *temp=tree;
-  if(temp==NULL){
+  if(tree==NULL){
     return NULL;
   }
-  if(temp->right){
-  	findMin(temp->right);
+  if(tree->right!=NULL){
+  	return findMax(tree->right);
   }else{
-  	return temp;
+  	return tree;
   }
   return NULL;
 }
 
 //helper for inserting integers into tree
-int compare_int(void *args1,void *args2){
-	if(*(int *)args1>*(int *)args2){
+int compare_int(int *args1,int *args2){
+	//fprintf(stderr, "compare int: %d %d\n",*args1,*args2);
+	if(*args1>*args2){
 		return 1;
-	}else if(*(int *)args1<*(int *)args2){
+	}else if(*args1<*args2){
 		return -1;
 	}else{
 		return 0;
@@ -103,10 +100,11 @@ int compare_int(void *args1,void *args2){
 }
 
 //helper for inserting decimals into tree
-int compare_double(void *args1,void *args2){
-	if(*(double *)args1>*(double *)args2){
+int compare_double(double *args1,double *args2){
+	//fprintf(stderr, "compare double: %f %f\n",*args1,*args2);
+	if(*args1>*args2){
 		return 1;
-	}else if(*(int *)args1<*(double *)args2){
+	}else if(*args1<*args2){
 		return -1;
 	}else{
 		return 0;

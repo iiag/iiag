@@ -2,6 +2,8 @@
 #define BSTREE_H
 #include "tree.h"
 
+typedef int(* compare)(void *,void *);
+
 //Insert node into tree
 tree_t *insert(tree_t *,void *,int,compare);
 
@@ -18,9 +20,9 @@ tree_t *findMin(tree_t *tree);
 tree_t *findMax(tree_t *tree);
 
 //helper for inserting integers into tree
-int compare_int(void *args1,void *args2);
+int compare_int(int *args1,int *args2);
 
 //helper for inserting decimals into tree
-int compare_double(void *args1,void *args2);
+int compare_double(double *args1,double *args2);
 
 #endif
