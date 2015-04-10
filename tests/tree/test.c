@@ -12,20 +12,17 @@
 
 void sumify_int(int * sum, int * x)
 {
-	fprintf(stderr, "%d %d\n",*x,*sum);
 	*sum += *x;
 }
 
 void sumify_double(double * sum, double * x)
 {
 	*sum += *x;
-	fprintf(stderr, "sumify sum: %f tree arg: %f\n",*sum,*x);
 }
 
 void sumify_float(float * sum, float * x)
 {
 	*sum += *x;
-	fprintf(stderr, "sumify sum: %f tree arg: %f\n",*sum,*x);
 }
 
 void insertAll(tree_t ** tree,void *attributes, void * data, int size, int count, compare func)
@@ -64,7 +61,7 @@ int main()
 	fprintf(stderr, "INORDER DONE\n\n");
 	fprintf(stderr, "POSTORDER START\n");
 	print_postorder(tree1,0,(print)print_int);
-	fprintf(stderr, "POSTORDER DONE\n");
+	fprintf(stderr, "POSTORDER DONE\n\n");
 
 
 	tree3 = search(tree1, stuff+1, (compare)compare_int);
@@ -86,7 +83,7 @@ int main()
 	fprintf(stderr, "INORDER DONE\n\n");
 	fprintf(stderr, "POSTORDER START\n");
 	print_postorder(tree2,0,(print)print_double);
-	fprintf(stderr, "POSTORDER DONE\n");
+	fprintf(stderr, "POSTORDER DONE\n\n");
 
 	tree4 = search(tree2, stuff3+3, (compare)compare_double);
 	expect(tree4!=NULL);
@@ -109,7 +106,7 @@ int main()
 	fprintf(stderr, "INORDER DELETE ELEM DONE\n\n");
 	fprintf(stderr, "POSTORDER START\n");
 	print_postorder(tree1,0,(print)print_int);
-	fprintf(stderr, "POSTORDER DELETE ELEM DONE\n");
+	fprintf(stderr, "POSTORDER DELETE ELEM DONE\n\n");
 
 	tree2=delete(tree2,stuff3+1,(compare)compare_double);
 
@@ -124,7 +121,7 @@ int main()
 	fprintf(stderr, "INORDER DELETE ELEM DONE\n\n");
 	fprintf(stderr, "POSTORDER DELETE ELEM START\n");
 	print_postorder(tree2,0,(print)print_double);
-	fprintf(stderr, "POSTORDER DELETE ELEM DONE\n");
+	fprintf(stderr, "POSTORDER DELETE ELEM DONE\n\n");
 
 	destroy_tree(tree1);
 	destroy_tree(tree2);
