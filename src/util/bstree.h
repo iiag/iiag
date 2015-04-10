@@ -25,4 +25,7 @@ int compare_int(int *args1,int *args2);
 //helper for inserting decimals into tree
 int compare_double(double *args1,double *args2);
 
+//helper for inserting float into tree
+int compare_float(float *args1,float *args2);
+
 #endif

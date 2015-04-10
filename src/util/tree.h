@@ -35,4 +35,7 @@ void print_int(void *data,int spaces);
 // helper to print decimals
 void print_double(void *data,int spaces);
 
+// helper to print decimals
+void print_float(void *data,int spaces);
+
 #endif

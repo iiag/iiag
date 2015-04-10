@@ -23,9 +23,8 @@ tree_t *insert(tree_t *tree,void *data,int sizeOfType,compare funccompare){
 
 tree_t *delete(tree_t *tree, void *data,compare funccompare){
   tree_t *temp;
-  if(tree==NULL){
-    return NULL;
-  }else if(funccompare(data,tree->data)<0){
+  if(tree==NULL) return tree;
+  if(funccompare(data,tree->data)<0){
     tree->left = delete(tree->left, data, funccompare);
   }else if(funccompare(data,tree->data)>0){
     tree->right = delete(tree->right, data, funccompare);
@@ -35,13 +34,15 @@ tree_t *delete(tree_t *tree, void *data,compare funccompare){
       tree -> data = temp->data; 
       tree -> right = delete(tree->right,temp->data, funccompare);
   	}else{
-      temp = tree;
       if(tree->left == NULL){
-        tree = tree->right;
+        temp = tree->right;
+        free(tree);
+        return temp;
       }else if(tree->right == NULL){
-        tree = tree->left;
+        temp = tree->left;
+        free(temp);
+        return temp;
       }
-      free(temp);
     }
   }
   return tree;
@@ -49,16 +50,15 @@ tree_t *delete(tree_t *tree, void *data,compare funccompare){
 
 
 tree_t *search(tree_t *tree, void *data,compare funccompare){
-  if(tree==NULL) return NULL;
-
+  if(tree==NULL) return tree;
   if(funccompare(data,tree->data)<0){
-    search(tree->left,data,funccompare);
+    return search(tree->left,data,funccompare);
   }else if(funccompare(data,tree->data)>0){
-    search(tree->right,data,funccompare);
+    return search(tree->right,data,funccompare);
   }else{
     return tree;
   }
-  return tree;
+  return NULL;
 }
 
 //find min element
@@ -89,7 +89,6 @@ tree_t *findMax(tree_t *tree){
 
 //helper for inserting integers into tree
 int compare_int(int *args1,int *args2){
-	//fprintf(stderr, "compare int: %d %d\n",*args1,*args2);
 	if(*args1>*args2){
 		return 1;
 	}else if(*args1<*args2){
@@ -101,7 +100,6 @@ int compare_int(int *args1,int *args2){
 
 //helper for inserting decimals into tree
 int compare_double(double *args1,double *args2){
-	//fprintf(stderr, "compare double: %f %f\n",*args1,*args2);
 	if(*args1>*args2){
 		return 1;
 	}else if(*args1<*args2){
@@ -109,4 +107,15 @@ int compare_double(double *args1,double *args2){
 	}else{
 		return 0;
 	}
+}
+
+//helper for inserting floats into tree
+int compare_float(float *args1,float *args2){
+  if(*args1>*args2){
+    return 1;
+  }else if(*args1<*args2){
+    return -1;
+  }else{
+    return 0;
+  }
 }

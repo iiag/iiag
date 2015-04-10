@@ -47,6 +47,7 @@ void print_postorder(tree_t *tree,int spaces,print funcprint){
   print_inorder(tree->left,spaces+4,funcprint);
   print_inorder(tree->right,spaces+4,funcprint);
   funcprint(tree->data,spaces);
+
 }
 
 // Applies a function to each element in the tree
@@ -54,7 +55,8 @@ void map_func(tree_t *tree,void *arg, func funcmap){
   if(tree==NULL) return;
   map_func(tree->left,arg,funcmap);
   map_func(tree->right,arg,funcmap);
-  funcmap(tree->data,arg);
+  fprintf(stderr, "map sum: %f tree data: %f\n",*(double *)arg,*(double *)tree->data);
+  funcmap(arg,tree->data);
 }
 
 // helper to print integers
@@ -73,5 +75,14 @@ void print_double(void *data,int spaces){
     fprintf(stderr, " ");
   }
   fprintf(stderr,"%f \n",*(double*)data); 
+}
+
+// helper to print float
+void print_float(void *data,int spaces){
+  int i;
+  for(i=0;i<spaces;i++){
+    fprintf(stderr, " ");
+  }
+  fprintf(stderr,"%f \n",*(float*)data); 
 }
 
