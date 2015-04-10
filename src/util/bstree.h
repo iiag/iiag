@@ -5,7 +5,7 @@
 typedef int(* compare)(void *,void *);
 
 //Insert node into tree
-tree_t *insert(tree_t *,void *,int,compare);
+tree_t *insert(tree_t *,void *,void *,int,compare);
 
 //Delete node from tree
 tree_t *delete(tree_t *,void *,compare);

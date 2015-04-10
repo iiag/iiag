@@ -13,16 +13,11 @@ tree_t *make_tree(void){
 }
 
 // destroy tree
-int destroy_tree(tree_t *tree){
-  if(tree==NULL){
-    return -1;
-  }else{
+void destroy_tree(tree_t *tree){
+  if(tree==NULL) return;
     destroy_tree(tree->left);
     destroy_tree(tree->right);
-    free(tree->data);
     free(tree);
-  }
-  return 0;
 }
 
 // prints inorder transversal of tree
@@ -55,34 +50,33 @@ void map_func(tree_t *tree,void *arg, func funcmap){
   if(tree==NULL) return;
   map_func(tree->left,arg,funcmap);
   map_func(tree->right,arg,funcmap);
-  fprintf(stderr, "map sum: %f tree data: %f\n",*(double *)arg,*(double *)tree->data);
   funcmap(arg,tree->data);
 }
 
 // helper to print integers
-void print_int(void *data,int spaces){
+void print_int(int *data,int spaces){
   int i;
   for(i=0;i<spaces;i++){
     fprintf(stderr, " ");
   }
-  fprintf(stderr,"%d \n",*(int*)data); 
+  fprintf(stderr,"%d \n",*data); 
 }
 
 // helper to print decimals
-void print_double(void *data,int spaces){
+void print_double(double *data,int spaces){
   int i;
   for(i=0;i<spaces;i++){
     fprintf(stderr, " ");
   }
-  fprintf(stderr,"%f \n",*(double*)data); 
+  fprintf(stderr,"%f \n",*data); 
 }
 
 // helper to print float
-void print_float(void *data,int spaces){
+void print_float(float *data,int spaces){
   int i;
   for(i=0;i<spaces;i++){
     fprintf(stderr, " ");
   }
-  fprintf(stderr,"%f \n",*(float*)data); 
+  fprintf(stderr,"%f \n",*data); 
 }
 

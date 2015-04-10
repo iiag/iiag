@@ -15,7 +15,7 @@ typedef void (* print)(void *,int );
 tree_t * make_tree(void);
 
 // destroy tree
-int destroy_tree(tree_t *);
+void destroy_tree(tree_t *);
 
 // prints inorder transversal of tree
 void print_inorder(tree_t *,int spaces,print);
@@ -30,12 +30,12 @@ void print_postorder(tree_t *,int spaces,print);
 void map_func(tree_t *,void *arg, func);
 
 // helper to print integers
-void print_int(void *data,int spaces);
+void print_int(int *data,int spaces);
 
 // helper to print decimals
-void print_double(void *data,int spaces);
+void print_double(double *data,int spaces);
 
-// helper to print decimals
-void print_float(void *data,int spaces);
+// helper to print floats
+void print_float(float *data,int spaces);
 
 #endif
