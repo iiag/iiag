@@ -52,6 +52,9 @@ server_t * start_server(void)
 
 	server = malloc(sizeof(server_t));
 	server->sock = sock;
+	server->connections = list_new();
+	server->connect_handlers = list_new();
+	server->disconnect_handlers = list_new();
 
 	return server;
 }
@@ -131,7 +134,7 @@ static void new_connection(
 
 void tick_server(server_t * server)
 {
-	int ret, accepted;
+	int ret;
 	struct sockaddr_in addr;
 	socklen_t socklen;
 
@@ -140,12 +143,14 @@ void tick_server(server_t * server)
 		socklen = sizeof(struct sockaddr_in);
 		ret = accept(server->sock, (struct sockaddr *) &addr, &socklen);
 
-		accepted = (ret == EAGAIN || ret == EWOULDBLOCK);
-
-		if (accepted) {
+		if (ret != -1) {
 			new_connection(server, ret, &addr, socklen);
+		} else {
+			if (errno != EAGAIN && errno != EWOULDBLOCK) {
+				perror("Error while accepting connection");
+			}
 		}
-	} while (accepted);
+	} while (ret != -1);
 }
 
 void on_connect(server_t * server, connection_handler handler)
