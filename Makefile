@@ -26,7 +26,7 @@ TESTS := $(shell find tests -name test.c -type f)
 # Object files to compile with tests, don't want conflicting mains
 TEST_OBJS = $(filter-out build/obj/main.o,$(OBJS))
 
-# The program that runs the tests, can be and empty string
+# The program that runs the tests, can be an empty string
 TESTER = valgrind -q
 
 # All the make rules

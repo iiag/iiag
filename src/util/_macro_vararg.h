@@ -21,9 +21,10 @@
  *   illegal symbol compiler error.
  */
 
-#define CONCAT(a, b) a##b
+#define _MVA_CONCAT(a, b) a##b
+#define MVA_CONCAT(a, b) _MVA_CONCAT(a, b)
 #define MVA_ARGN(_1, _2, _3, _4, _5, _6, _7, _8, N, ...) N
 #define MVA_NARGS(...) MVA_ARGN(__VA_ARGS__, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-#define MVA_DISPATCH(base, ...) CONCAT(base, MVA_NARGS(__VA_ARGS__))(__VA_ARGS__)
+#define MVA_DISPATCH(base, ...) MVA_CONCAT(base, MVA_NARGS(__VA_ARGS__))(__VA_ARGS__)
 
 #endif
