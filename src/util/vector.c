@@ -82,10 +82,10 @@ int vec_equal(vector *va, vector *vb, vec_eq_f eq) {
 	return 1;
 }
 
-void vec_foreach(vector *v, vec_iter_f iter) {
+void vec_foreach(vector *v, vec_iter_f iter, void *data) {
 	size_t i;
 	for(i = 0; i < v->len; i++) {
-		iter(v->buf[i]);
+		iter(v->buf[i], data);
 	}
 }
 

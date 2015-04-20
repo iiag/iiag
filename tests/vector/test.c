@@ -23,7 +23,7 @@ int make_data(vector *v) {
 }
 
 void free_data(vector *v) {
-    vec_foreach(v, (vec_iter_f) free);
+    vec_foreach(v, (vec_iter_f) free, NULL);
 }
 
 void print_out(int *a) {
@@ -91,7 +91,7 @@ int test_data() {
     expect_msg(make_data(&v), "make_data failed\n");
     expect_msg(v.len == NDATA, "Expected length %d, got %ld\n", NDATA, v.len);
     printf("Following should be a identity permutation from 0 to %d inclusive:\n", NDATA-1);
-    vec_foreach(&v, (vec_iter_f) print_out);
+    vec_foreach(&v, (vec_iter_f) print_out, NULL);
     printf("\nIf that wasn't the case, it's broken, and I don't know what to tell you :)\n");
     free_data(&v);
     vec_clear(&v);
