@@ -150,7 +150,7 @@ int test_map() {
     size_t i;
     expect_msg(make_data(&v), "make_data failed\n");
     vec_init(&vmap);
-    vec_map(&v, &vmap, (vec_map_f) mul_three);
+    vec_map(&v, &vmap, (vec_map_f) mul_three, NULL);
     expect_msg(v.len == vmap.len, "Expected length %ld, got %ld\n", v.len, vmap.len);
     for(i = 0; i < v.len; i++) {
         expect_msg(*vec_get(&vmap, i, int) == 3 * *vec_get(&v, i, int), "Element %ld, value %d -- expected %d\n", i, *vec_get(&vmap, i, int), 3 * *vec_get(&v, i, int));
@@ -182,7 +182,7 @@ int test_test() {
     vec_init(&vmap);
     expect(make_data(&v));
     expect(!vec_test(&v, (vec_test_f) is_ident_permuted, NULL));
-    vec_map(&v, &vmap, (vec_map_f) mul_three);
+    vec_map(&v, &vmap, (vec_map_f) mul_three, NULL);
     expect(1 == vec_test(&vmap, (vec_test_f) is_ident_permuted, NULL));
     free_data(&v);
     free_data(&vmap);
@@ -196,7 +196,7 @@ int test_equal() {
     vec_init(&vmap);
     expect(make_data(&v));
     expect(make_data(&v2));
-    vec_map(&v, &vmap, (vec_map_f) mul_three);
+    vec_map(&v, &vmap, (vec_map_f) mul_three, NULL);
     expect(vec_equal(&v, &v2, (vec_eq_f) int_equal));
     expect(!vec_equal(&v, &vmap, (vec_eq_f) int_equal));
     expect(!vec_equal(&v2, &vmap, (vec_eq_f) int_equal));
@@ -230,7 +230,7 @@ int test_copy() {
     expect_msg(vec_equal(&v, &v2, (vec_eq_f) int_equal), "direct copy: integers not equal\n");
     expect_msg(vec_equal(&v, &v2, (vec_eq_f) ptrs_equal), "direct copy: pointers not equal\n");
     /* Not even going to bother to clear it--that would dangle some pointers :P */
-    vec_map(&v, &v2, (vec_map_f) identity); /* The "right" way to do it to maintain single-user data */
+    vec_map(&v, &v2, (vec_map_f) identity, NULL); /* The "right" way to do it to maintain single-user data */
     expect_msg(v.len == v2.len, "map copy: Expected length %ld, got %ld\n", v.len, v2.len);
     expect_msg(vec_equal(&v, &v2, (vec_eq_f) int_equal), "map copy: integers not equal\n");
     expect_msg(!vec_equal(&v, &v2, (vec_eq_f) ptrs_equal), "map copy: references shared\n");

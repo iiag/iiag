@@ -43,12 +43,12 @@ void vec_alloc(vector *v, size_t cap) {
 	v->len = (v->cap < v->len ? v->cap : v->len);
 }
 
-void vec_map(vector *vin, vector *vout, vec_map_f map) {
+void vec_map(vector *vin, vector *vout, vec_map_f map, void *data) {
 	size_t i;
 	vec_clear(vout);
 	vec_alloc(vout, vin->len);
 	for(i = 0; i < vin->len; i++) {
-		vout->buf[i] = map(vin->buf[i]);
+		vout->buf[i] = map(vin->buf[i], data);
 	}
         vout->len = vin->len; /* XXX Race condition if map modifies vout */
 }

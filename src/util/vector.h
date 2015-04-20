@@ -11,7 +11,7 @@ typedef struct {
 } vector;
 
 /* Mostly for prettier casting */
-typedef void *(*vec_map_f)(void *);
+typedef void *(*vec_map_f)(void *, void *);
 typedef void *(*vec_reduce_f)(void *, void *);
 typedef int (*vec_test_f)(void *, void *, vector *, size_t);
 typedef int (*vec_eq_f)(void *, void *);
@@ -22,7 +22,7 @@ void vec_clear(vector *v);
 void vec_insert(vector *v,size_t idx,void *val);
 void *vec_remove(vector *v,size_t idx);
 void vec_alloc(vector *v,size_t cap);
-void vec_map(vector *vin,vector *vout,vec_map_f map);
+void vec_map(vector *vin,vector *vout,vec_map_f map,void *data);
 void *vec_reduce(vector *v,vec_reduce_f reduce,void *init);
 int vec_test(vector *v,vec_test_f test,void *data);
 int vec_equal(vector *va,vector *vb,vec_eq_f eq);
