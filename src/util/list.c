@@ -5,30 +5,28 @@
 typedef struct list_elm list_elm_t;
 
 struct list {
-	list_elm_t * front;
-	list_elm_t * back;
+	list_elm_t *front;
+	list_elm_t *back;
 	size_t size;
 };
 
 struct list_elm {
-	void * value;
-	list_elm_t * next;
-	list_elm_t * prev;
+	void *value;
+	list_elm_t *next;
+	list_elm_t *prev;
 };
 
-list_t * list_new(void)
-{
-	list_t * ls = malloc(sizeof(list_t));
+list_t *list_new(void) {
+	list_t *ls = malloc(sizeof(list_t));
 	ls->front = NULL;
 	ls->back = NULL;
 	ls->size = 0;
 	return ls;
 }
 
-void list_destroy(list_t * ls)
-{
-	list_elm_t * tmp;
-	list_elm_t * elm = ls->front;
+void list_destroy(list_t *ls) {
+	list_elm_t *tmp;
+	list_elm_t *elm = ls->front;
 
 	while (elm) {
 		tmp = elm->next;
@@ -39,9 +37,8 @@ void list_destroy(list_t * ls)
 	free(ls);
 }
 
-void list_push(list_t * ls, void * value)
-{
-	list_elm_t * elm = malloc(sizeof(list_elm_t));
+void list_push(list_t *ls, void *value) {
+	list_elm_t *elm = malloc(sizeof(list_elm_t));
 
 	elm->value = value;
 	elm->next = ls->front;
@@ -59,10 +56,9 @@ void list_push(list_t * ls, void * value)
 	ls->front = elm;
 }
 
-void * list_pop(list_t * ls)
-{
-	void * value;
-	list_elm_t * elm;
+void *list_pop(list_t *ls) {
+	void *value;
+	list_elm_t *elm;
 
 	if (ls->front) {
 		elm = ls->front;
@@ -87,9 +83,8 @@ void * list_pop(list_t * ls)
 	return value;
 }
 
-void list_push_back(list_t * ls, void * value)
-{
-	list_elm_t * elm = malloc(sizeof(list_elm_t));
+void list_push_back(list_t *ls, void *value) {
+	list_elm_t *elm = malloc(sizeof(list_elm_t));
 
 	elm->value = value;
 	elm->next = NULL;
@@ -107,10 +102,9 @@ void list_push_back(list_t * ls, void * value)
 	ls->back = elm;
 }
 
-void * list_pop_back(list_t * ls)
-{
-	void * value;
-	list_elm_t * elm;
+void *list_pop_back(list_t *ls) {
+	void *value;
+	list_elm_t *elm;
 
 	if (ls->back) {
 		elm = ls->back;
@@ -134,14 +128,12 @@ void * list_pop_back(list_t * ls)
 	return value;
 }
 
-int list_size(list_t * ls)
-{
+int list_size(list_t *ls) {
 	return ls->size;
 }
 
-void list_foreach(list_t * ls, void * arg2, list_foreach_func func)
-{
-	list_elm_t * elm = ls->front;
+void list_foreach(list_t *ls, void *arg2, list_foreach_func func) {
+	list_elm_t *elm = ls->front;
 
 	while (elm) {
 		func(elm->value, arg2);
@@ -149,9 +141,8 @@ void list_foreach(list_t * ls, void * arg2, list_foreach_func func)
 	}
 }
 
-void list_foreach_reverse(list_t * ls, void * arg2, list_foreach_func func)
-{
-	list_elm_t * elm = ls->back;
+void list_foreach_reverse(list_t *ls, void *arg2, list_foreach_func func) {
+	list_elm_t *elm = ls->back;
 
 	while (elm) {
 		func(elm->value, arg2);
