@@ -15,6 +15,12 @@ LDFL := -Wall -Werror -lm
 # List of source files
 SRCS := $(subst src/,,$(shell find src -name \*.c -type f))
 
+# List of all the source and headers, rooted at .
+ALL_SRCS := $(shell find src \( -name \*.c -o -name \*.h \) -type f)
+
+# List of all the "orig" files
+ALL_ORIG := $(shell find src -name *.orig -type f)
+
 # Construct file lists
 OBJS := $(addprefix build/obj/,$(patsubst %.c,%.o,$(SRCS)))
 DEPS := $(addprefix build/dep/,$(patsubst %.c,%.d,$(SRCS)))
@@ -26,11 +32,11 @@ TESTS := $(shell find tests -name test.c -type f)
 # Object files to compile with tests, don't want conflicting mains
 TEST_OBJS = $(filter-out build/obj/main.o,$(OBJS))
 
-# The program that runs the tests, can be and empty string
+# The program that runs the tests, can be an empty string
 TESTER = valgrind -q
 
 # All the make rules
-.PHONY: all clean install test FORCE_RULE
+.PHONY: all clean install test style style_clean FORCE_RULE
 
 all: $(TARGET)
 
@@ -54,13 +60,19 @@ test: all $(TESTS)
 	@ echo " > running..."
 	@ $(TESTER) build/$(@D)
 
-clean:
+clean: style_clean
 	rm -rf build
 	rm -f $(TARGET)
 
 install: all
 	mkdir -p $(DESTDIR)
 	cp $(TARGET) $(DESTDIR)
+
+style: $(ALL_SRCS)
+	astyle -tSjp -A2 -k3 -W3 $^
+
+style_clean: $(ALL_ORIG)
+	rm -f $^
 
 # Include automagically generated dependencies
 -include $(DEPS)
