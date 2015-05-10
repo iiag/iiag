@@ -1,2 +1,4 @@
 build/
 iiag
+*.swp
+*.orig
