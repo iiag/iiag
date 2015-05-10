@@ -15,7 +15,7 @@ struct connection {
 };
 
 // Start the server, returns a server_t if successful, NULL if not
-server_t * start_server(void);
+server_t *start_server(void);
 
 // Stop the server, returns true on success, false otherwise
 bool stop_server(server_t *);

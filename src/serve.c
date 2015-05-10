@@ -16,15 +16,14 @@
 
 struct server {
 	int sock;
-	list_t * connections;
-	list_t * connect_handlers;
-	list_t * disconnect_handlers;
+	list_t *connections;
+	list_t *connect_handlers;
+	list_t *disconnect_handlers;
 };
 
-server_t * start_server(void)
-{
+server_t *start_server(void) {
 	int sock;
-	server_t * server;
+	server_t *server;
 	struct sockaddr_in addr;
 
 	// Open a socket
@@ -59,8 +58,7 @@ server_t * start_server(void)
 	return server;
 }
 
-bool stop_server(server_t * server)
-{
+bool stop_server(server_t *server) {
 	// Close the connection
 	if (close(server->sock) == -1) {
 		perror("Could not close socket");
@@ -70,18 +68,16 @@ bool stop_server(server_t * server)
 	return true;
 }
 
-static void call_handler(connection_handler handler, const connection_t * conn)
-{
+static void call_handler(connection_handler handler, const connection_t *conn) {
 	handler(conn);
 }
 
 // Called by tick_server upon each new connection found
 static void new_connection(
-		server_t * server,
-		int sock,
-		const struct sockaddr_in * addr,
-		socklen_t len)
-{
+    server_t *server,
+    int sock,
+    const struct sockaddr_in *addr,
+    socklen_t len) {
 	// Our handshake response does not change
 	static iiag_handshake_t my_handshake = {
 		IIAG_MARKER,
@@ -120,7 +116,7 @@ static void new_connection(
 	}
 
 	// Create the connection object
-	connection_t * conn = malloc(sizeof(connection_t));
+	connection_t *conn = malloc(sizeof(connection_t));
 	conn->sock = sock;
 	conn->major_ver = recv_handshake.major_ver;
 	conn->minor_ver = recv_handshake.minor_ver;
@@ -132,8 +128,7 @@ static void new_connection(
 	list_push(server->connections, conn);
 }
 
-void tick_server(server_t * server)
-{
+void tick_server(server_t *server) {
 	int ret;
 	struct sockaddr_in addr;
 	socklen_t socklen;
@@ -153,12 +148,10 @@ void tick_server(server_t * server)
 	} while (ret != -1);
 }
 
-void on_connect(server_t * server, connection_handler handler)
-{
+void on_connect(server_t *server, connection_handler handler) {
 	list_push(server->connect_handlers, handler);
 }
 
-void on_disconnect(server_t * server, connection_handler handler)
-{
+void on_disconnect(server_t *server, connection_handler handler) {
 	list_push(server->disconnect_handlers, handler);
 }

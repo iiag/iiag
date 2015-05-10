@@ -13,7 +13,7 @@
 #define IIAG_MARKER_LENGTH (sizeof(IIAG_MARKER) - 1)
 
 // This is the first packet sent by the server to the client to begin the
-// connection, the back from the server to the client to confirm. 
+// connection, the back from the server to the client to confirm.
 typedef struct {
 	char marker[IIAG_MARKER_LENGTH]; // Identifies the iiag protocol
 	int16_t major_ver, minor_ver;    // Identifies the protocol version
