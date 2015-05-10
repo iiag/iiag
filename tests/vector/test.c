@@ -26,10 +26,6 @@ void free_data(vector *v) {
     vec_foreach(v, (vec_iter_f) free, NULL);
 }
 
-void print_out(int *a) {
-    printf("%d ", *a);
-}
-
 int *mul_three(int *a) {
     int *ret = malloc(sizeof(int));
     assert(ret);
@@ -86,13 +82,22 @@ int test_empty() {
     pass();
 }
 
+void test_foreach(int *a, int *counter) {
+    assert(*counter == *a);
+    ++*counter;
+}
+
 int test_data() {
+    int counter = 0;
     vector v;
+
     expect_msg(make_data(&v), "make_data failed\n");
     expect_msg(v.len == NDATA, "Expected length %d, got %ld\n", NDATA, v.len);
-    printf("Following should be a identity permutation from 0 to %d inclusive:\n", NDATA-1);
-    vec_foreach(&v, (vec_iter_f) print_out, NULL);
-    printf("\nIf that wasn't the case, it's broken, and I don't know what to tell you :)\n");
+
+    // should iterate over the vector from 0 -> NDATA-1 successivly
+    vec_foreach(&v, (vec_iter_f) test_foreach, &counter);
+    expect(counter == NDATA);
+
     free_data(&v);
     vec_clear(&v);
     expect_msg(v.len == 0, "Expected length 0, got %ld\n", v.len);
