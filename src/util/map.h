@@ -10,6 +10,7 @@ void   map_free(map_t *);
 void  *map_get(map_t *, int);
 void  *map_remove(map_t *, int);
 void   map_add(map_t *, int, void *);
+void  *map_set(map_t *, int, void *);
 void   map_map(map_t *, map_map_func, void *data);
 
 

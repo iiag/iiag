@@ -126,6 +126,15 @@ void test_map(void) {
       }
    }
 
+   // check map set
+   int a = 12;
+   int b = 13;
+
+   assert(NULL == map_set(maw, -1, &a));
+   assert(a == *(int *)map_get(maw, -1));
+   assert(a == *(int *)map_set(maw, -1, &b));
+   assert(b == *(int *)map_get(maw, -1));
+
    map_free(maw);
 }
 

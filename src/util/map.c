@@ -63,6 +63,24 @@ void map_add(map_t *m, int k, void *d) {
 	avl_add(m->tree, tmp);
 }
 
+void *map_set(map_t *m, int k, void *d) {
+	void *ret = NULL;
+	pair_t tmp;
+	pair_t *got;
+
+	tmp.key = k;
+	got = avl_find(m->tree, &tmp);
+
+	if (!got) {
+		map_add(m, k, d);
+	} else {
+		ret = got->data;
+		got->data = d;
+	}
+
+	return ret;
+}
+
 struct map_map_pair {
 	map_map_func fun;
 	void *arg;
