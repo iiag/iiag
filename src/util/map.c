@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "map.h"
 #include "AVLTree.h"
 
