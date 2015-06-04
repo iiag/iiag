@@ -127,9 +127,9 @@ AVLNode *avl_node_find(AVLNode *n, void *f, comp_func fun) {
 	if(fun(n->data, f) < 0) {
 		return avl_node_find(n->right, f, fun);
 	}
-	if(fun(n->data, f) > 0) {
-		return avl_node_find(n->left, f, fun);
-	}
+
+	// fun(n->data, f) > 0 is true
+	return avl_node_find(n->left, f, fun);
 }
 
 AVLNode *avl_greatest(AVLNode *n) {
