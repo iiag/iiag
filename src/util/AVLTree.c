@@ -222,7 +222,7 @@ void avl_delete_node(AVLNode *n) {
 
 void *avl_find(AVLTree *t, void *d) {
 	AVLNode *n = avl_node_find(t->root, d, t->comp);
-	return n->data;
+	return n ? n->data : NULL;
 }
 
 void avl_delete(AVLTree *t, void *d) {

@@ -41,14 +41,16 @@ void map_free(map_t *m) {
 void *map_get(map_t *m, int k) {
 	pair_t tmp;
 	tmp.key = k;
-	return ((pair_t *)avl_find(m->tree, &tmp))->data;
+
+	pair_t *got = avl_find(m->tree, &tmp);
+	return got ? got->data : NULL;
 }
 
 void *map_remove(map_t *m, int k) {
 	void *ret;
 	pair_t tmp;
 	tmp.key = k;
-	ret = ((pair_t *)avl_find(m->tree, &tmp))->data;
+	ret = map_get(m, k);
 
 	avl_delete(m->tree, &tmp);
 	return ret;
