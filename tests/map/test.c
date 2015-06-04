@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "AVLTree.h"
-#include "map.h"
+#include <time.h>
+#include "util/AVLTree.h"
+#include "util/map.h"
 
 int int_comp(void* v1, void* v2){
    int n1;int n2;
