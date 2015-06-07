@@ -46,7 +46,7 @@ $(TARGET): $(OBJS)
 build/obj/%.o: src/%.c
 	@ mkdir -p $(@D)
 	@ mkdir -p $(subst obj,dep,$(@D))
-	@ $(CC) -MM -MP -MT $@ -MF $(patsubst %.o,%.d,$(subst obj,dep,$@)) $<
+	@ $(CC) $(CCFL) -MM -MP -MT $@ -MF $(patsubst %.o,%.d,$(subst obj,dep,$@)) $<
 	$(CC) -c $(CCFL) $< -o $@
 
 test: all $(TESTS)
