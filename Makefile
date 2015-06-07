@@ -9,8 +9,8 @@ CC      = gcc
 DESTDIR = /opt/iiag
 
 # Compile and link flags
-CCFL := -g -Wall -Werror
-LDFL := -Wall -Werror -lm
+CCFL := -g -Wall -Werror -Isrc
+LDFL := -Wall -Werror -lm -lpthread
 
 # List of source files
 SRCS := $(subst src/,,$(shell find src -name \*.c -type f))
