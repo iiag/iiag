@@ -16,18 +16,18 @@ LDFL := -Wall -Werror -lm
 SRCS := $(subst src/,,$(shell find src -name \*.c -type f))
 
 # List of all the source and headers, rooted at .
-ALL_SRCS := $(shell find src \( -name \*.c -o -name \*.h \) -type f)
+ALL_SRCS := $(shell find . \( -name \*.c -o -name \*.h \) -type f)
 
 # List of all the "orig" files
-ALL_ORIG := $(shell find src -name *.orig -type f)
+ALL_ORIG := $(shell find . -name *.orig -type f)
 
 # Construct file lists
 OBJS := $(addprefix build/obj/,$(patsubst %.c,%.o,$(SRCS)))
 DEPS := $(addprefix build/dep/,$(patsubst %.c,%.d,$(SRCS)))
 SRCS := $(addprefix src/,$(SRCS))
 
-# List of tests
-TESTS := $(shell find tests -name test.c -type f)
+# List of test executables to build
+TESTS := $(patsubst %/test.c,build/%,$(shell find tests -name test.c -type f))
 
 # Object files to compile with tests, don't want conflicting mains
 TEST_OBJS = $(filter-out build/obj/main.o,$(OBJS))
@@ -52,13 +52,13 @@ build/obj/%.o: src/%.c
 test: all $(TESTS)
 	@ echo All tests passed!
 
-%/test.c: FORCE_RULE
-	@ mkdir -p build/$(shell dirname $(@D))
-	@ echo testing $(subst tests/,,$(@D)):
+build/tests/%: tests/%/test.c FORCE_RULE
+	@ mkdir -p build/$(shell dirname $(<D))
+	@ echo testing $(subst tests/,,$(<D)):
 	@ echo " > building..."
-	@ $(CC) $(CCFL) $(LDFL) -g -Isrc -I$(@D) $(@D)/*.c $(TEST_OBJS) -o build/$(@D)
+	@ $(CC) $(CCFL) $(LDFL) -g -Isrc -I$(<D) $(<D)/*.c $(TEST_OBJS) -o $@
 	@ echo " > running..."
-	@ $(TESTER) build/$(@D)
+	@ $(TESTER) $@
 
 clean: style_clean
 	rm -rf build
