@@ -8,13 +8,11 @@
 		return EXIT_FAILURE; \
 	}
 
-void sumify(int * x, int * sum)
-{
+void sumify(int *x, int *sum) {
 	*sum += *x;
 }
 
-void push_all(list_t * ls, int * ints, int cnt)
-{
+void push_all(list_t *ls, int *ints, int cnt) {
 	int i;
 
 	for (i = 0; i < cnt; i++) {
@@ -22,8 +20,7 @@ void push_all(list_t * ls, int * ints, int cnt)
 	}
 }
 
-void push_all_back(list_t * ls, int * ints, int cnt)
-{
+void push_all_back(list_t *ls, int *ints, int cnt) {
 	int i;
 
 	for (i = 0; i < cnt; i++) {
@@ -31,10 +28,9 @@ void push_all_back(list_t * ls, int * ints, int cnt)
 	}
 }
 
-int main()
-{
+int main() {
 	int sum = 0;
-	list_t * l = list_new();
+	list_t *l = list_new();
 
 	int stuff[] = {1, 2, 4, 100, 101};
 	int stuff2[] = {8, 16};
