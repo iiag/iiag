@@ -9,8 +9,8 @@ CC      = gcc
 DESTDIR = /opt/iiag
 
 # Compile and link flags
-CCFL := -g -Wall -Werror
-LDFL := -Wall -Werror -lm
+CCFL := -g -Wall -Werror -Isrc
+LDFL := -Wall -Werror -lm -lpthread
 
 # List of source files
 SRCS := $(subst src/,,$(shell find src -name \*.c -type f))
@@ -46,7 +46,7 @@ $(TARGET): $(OBJS)
 build/obj/%.o: src/%.c
 	@ mkdir -p $(@D)
 	@ mkdir -p $(subst obj,dep,$(@D))
-	@ $(CC) -MM -MP -MT $@ -MF $(patsubst %.o,%.d,$(subst obj,dep,$@)) $<
+	@ $(CC) $(CCFL) -MM -MP -MT $@ -MF $(patsubst %.o,%.d,$(subst obj,dep,$@)) $<
 	$(CC) -c $(CCFL) $< -o $@
 
 test: all $(TESTS)
