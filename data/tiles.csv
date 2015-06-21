@@ -1,0 +1,7 @@
+#type,passible,transparent,on_use,on_step,comment,"spaces used in this file may be trated as seperate cells by the loader"
+0,0,0,0,0,void,
+1,1,1,0,0,grass,
+2,1,1,0,0,dirt,
+3,1,1,0,0,"dirt path",
+50,0,0,0,0,tree,
+51,0,1,0,0,shrub,

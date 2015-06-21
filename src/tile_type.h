@@ -1,6 +1,7 @@
 #ifndef TILE_TYPE_H
 #define TILE_TYPE_H
 #include "util/map.h"
+#include <stdio.h>
 
 typedef struct TileType tile_type_t;
 
@@ -18,6 +19,7 @@ char transparent;
 extern map_t* theTiles;
 
 void load_tiles();
+void unload_tiles();
 char** get_csv_line(FILE*,int*);
 
 #endif

@@ -3,7 +3,7 @@
 
 typedef struct AVL_Map map_t;
 
-typedef void (*map_map_func)(int, void *, void *);
+typedef void (*map_map_func)(int key, void * data, void * arg);
 
 map_t *map_new();
 void   map_free(map_t *);
